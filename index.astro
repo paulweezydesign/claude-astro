@@ -1,0 +1,40 @@
+---
+import { connectToDb } from '../lib/mongodb';
+import SnippetForm from '../components/SnippetForm';
+
+const db = await connectToDb();
+const snippets = await db.collection('snippets').find({}).toArray();
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Code Snippets</title>
+</head>
+<body class="max-w-4xl mx-auto p-4">
+  <h1 class="text-3xl font-bold mb-8">Code Snippets</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Add New Snippet</h2>
+      <SnippetForm client:load />
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Your Snippets</h2>
+      <div class="space-y-4">
+        {snippets.map((snippet) => (
+          <div class="border p-4 rounded">
+            <h3 class="font-bold">{snippet.title}</h3>
+            <div class="text-sm text-gray-500 mb-2">{snippet.language}</div>
+            <pre class="bg-gray-100 p-2 rounded overflow-x-auto">
+              <code>{snippet.code}</code>
+            </pre>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</body>
+</html>
